@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deutsch Übungen: Personalpronomen</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background-color: #f0f2f5; margin: 0; }
+        .question-container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; max-width: 600px; width: 90%; }
+        input[type="text"] { width: 80%; padding: 12px; margin-top: 10px; border: 2px solid #ccc; border-radius: 6px; font-size: 16px; outline: none; transition: 0.3s; }
+        input[type="text"]:focus { border-color: #0078D7; }
+        .hint { color: #666; font-size: 0.95em; margin-top: 5px; margin-bottom: 15px; font-style: italic; background-color: #eef9fd; padding: 8px; border-radius: 5px; display: inline-block;}
+        .feedback { display: none; margin-top: 15px; font-size: 1.1em; line-height: 1.5; }
+        .richtig { color: #27ae60; font-weight: bold; }
+        .falsch { color: #c0392b; }
+        .btn-group { margin-top: 25px; }
+        button { background: #0078D7; color: white; border: none; padding: 10px 20px; margin: 5px; border-radius: 6px; cursor: pointer; font-size: 16px; transition: 0.3s; }
+        button:hover { background: #005a9e; }
+        .header { margin-bottom: 20px; color: #555; font-size: 0.9em; display: flex; justify-content: space-between; padding: 0 10%;}
+        /* Celebration Animation */
+        @keyframes pop {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+        .celebration { animation: pop 0.6s ease-out forwards; }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <!-- Content injected via JS -->
+</div>
+
+<script>
+    // Sample of questions extracted from the provided images with basic hints
+    // Added 'alt' array for alternative correct answers.
+    const questions = [
+        { q: "Verstehst du uns?", hint: "Antworte negativ (Nein)", a: "Nein, ich verstehe euch nicht." },
+        { q: "Siehst du heute Wolfgang?", hint: "Antworte negativ (Nein)", a: "Nein, ich sehe ihn heute nicht." },
+        { q: "Liebst du Petra?", hint: "Antworte negativ (Nein)", a: "Nein, ich liebe sie nicht." },
+        { q: "Liebst du Peter?", hint: "Antworte positiv (Ja)", a: "Ja, ich liebe ihn." },
+        { q: "Liebst du dein Kind?", hint: "Antworte positiv mit 'sehr' (Ja)", a: "Ja, ich liebe es sehr." },
+        { q: "Liebst du mich auch?", hint: "Antworte positiv (Ja)", a: "Ja, dich liebe ich auch.", alt: ["Ja, ich liebe dich auch."] },
+        { q: "Siehst du mich?", hint: "Antworte negativ (Nein)", a: "Nein, ich sehe dich nicht." },
+        { q: "Begleitest du den Schüler?", hint: "Antworte negativ (Nein)", a: "Nein, ich begleite ihn nicht." },
+        { q: "Siehst du das Kino?", hint: "Antworte positiv (Ja)", a: "Ja, ich sehe es." },
+        { q: "Siehst du auch die Autos?", hint: "Antworte negativ (Nein)", a: "Nein, ich sehe sie nicht." },
+        { q: "Kaufst du die Flasche Wein?", hint: "Antworte negativ (Nein)", a: "Nein, ich kaufe sie nicht." },
+        { q: "Ist er krank?", hint: "Antworte negativ (Nein)", a: "Nein, er ist nicht krank." },
+        { q: "Sucht er Herrn Müller?", hint: "Antworte negativ (Nein)", a: "Nein, er sucht ihn nicht." },
+        { q: "Stiehlt das Kind das Buch?", hint: "Antworte negativ (Nein)", a: "Nein, es stiehlt es nicht." },
+        { q: "Stiehlt Martina den Wagen?", hint: "Antworte negativ (Nein)", a: "Nein, sie stiehlt ihn nicht." }
+    ];
+
+    let currentIndex = 0;
+    let score = 0; // Keep track of correct answers
+
+    function render() {
+        const app = document.getElementById('app');
+        if (currentIndex >= questions.length) {
+            let resultHTML = '<div class="question-container">';
+            resultHTML += '<h2>Quiz beendet!</h2>';
+            resultHTML += \`<p style="font-size: 1.2em;">Deine Punktzahl: <strong>\${score} / \${questions.length}</strong></p>\`;
+            
+            // Celebrate if score is greater than 11
+            if (score > 11) {
+                resultHTML += '<div class="celebration">';
+                resultHTML += '<div style="font-size: 4em; margin: 10px 0;">🎉🏆🎊</div>';
+                resultHTML += '<h3 style="color: #27ae60;">Herzlichen Glückwunsch! Ausgezeichnete Arbeit!<br><span style="font-size:0.8em; color:#555;">(عمل ممتاز! تهانينا على هذه النتيجة الرائعة)</span></h3>';
+                resultHTML += '</div>';
+            } else {
+                resultHTML += '<div style="font-size: 3em; margin: 10px 0;">👍📚</div>';
+                resultHTML += '<h3>Gut gemacht! Übung macht den Meister.<br><span style="font-size:0.8em; color:#555;">(عمل جيد، لكن حاول مرة أخرى لتحسين نتيجتك!)</span></h3>';
+            }
+            
+            resultHTML += '<button onclick="currentIndex=0; score=0; render()" style="margin-top: 20px;">Nochmal starten</button>';
+            resultHTML += '</div>';
+            
+            app.innerHTML = resultHTML;
+            return;
+        }
+
+        const currentQ = questions[currentIndex];
+        app.innerHTML = `
+            <div class="question-container">
+                <div class="header">
+                    <span>Frage ${currentIndex + 1} von ${questions.length}</span>
+                    <span style="color: #0078D7; font-weight: bold;">Punkte: ${score}</span>
+                </div>
+                <h2 style="font-size: 1.5em; color: #333; margin-bottom: 5px;">${currentQ.q}</h2>
+                <div class="hint">${currentQ.hint}</div>
+                <br>
+                <input type="text" id="studentAnswer" placeholder="Deine Antwort hier eingeben..." autocomplete="off">
+                <div id="feedback" class="feedback"></div>
+                <div class="btn-group">
+                    <button id="checkBtn" onclick="checkAnswer()">Korrigieren</button>
+                    <button id="nextBtn" onclick="nextQuestion()" style="display:none;">Nächste Frage</button>
+                </div>
+            </div>
+        `;
+        
+        // Allow pressing "Enter" to submit answer or go to next question
+        document.getElementById("studentAnswer").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                if (document.getElementById("checkBtn").style.display !== "none") {
+                    checkAnswer();
+                } else {
+                    nextQuestion();
+                }
+            }
+        });
+        
+        // Focus the input field automatically
+        document.getElementById("studentAnswer").focus();
+    }
+
+    function checkAnswer() {
+        const studentInput = document.getElementById('studentAnswer').value.trim();
+        const feedbackEl = document.getElementById('feedback');
+        const currentQ = questions[currentIndex];
+        
+        // Gather all accepted answers
+        const acceptedAnswers = [currentQ.a];
+        if (currentQ.alt) {
+            acceptedAnswers.push(...currentQ.alt);
+        }
+        
+        // Normalize strings for comparison
+        const normalize = (str) => str.toLowerCase().replace(/[.,!?]/g, '').replace(/\s+/g, ' ').trim();
+        const normalizedInput = normalize(studentInput);
+        
+        const isCorrect = acceptedAnswers.some(ans => normalize(ans) === normalizedInput);
+        
+        if (isCorrect) {
+            feedbackEl.innerHTML = "Richtig!";
+            feedbackEl.className = "feedback richtig";
+            score++; // Increase score if correct
+        } else {
+            // Show correction with primary answer
+            feedbackEl.innerHTML = "<span style='font-weight:bold;'>Falsch!</span> Die richtige Antwort ist z.B.:<br><strong style='color:#333;'>" + currentQ.a + "</strong>";
+            if(currentQ.alt) {
+                feedbackEl.innerHTML += "<br><br><span style='font-size:0.9em; color:#666;'>Oder auch: " + currentQ.alt.join(" / ") + "</span>";
+            }
+            feedbackEl.className = "feedback falsch";
+        }
+        feedbackEl.style.display = "block";
+        
+        document.getElementById('checkBtn').style.display = "none";
+        document.getElementById('nextBtn').style.display = "inline-block";
+        document.getElementById('studentAnswer').disabled = true;
+    }
+
+    function nextQuestion() {
+        currentIndex++;
+        render();
+    }
+
+    render();
+</script>
+
+</body>
+</html>
